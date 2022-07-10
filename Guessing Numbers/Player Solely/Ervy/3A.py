@@ -5,7 +5,7 @@ import sys as SYS
 
 
 # === Window === #
-Wind.windll.kernel32.SetConsoleTitleW("[Number Guess] - Testing Game")
+Wind.windll.kernel32.SetConsoleTitleW("[3A] - Testing Game")
 
 
 # === Def. Functions === #
