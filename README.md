@@ -3,4 +3,4 @@ is a library on which I recopile every project sent to the Discord server of Dal
 
 Their ultimate goal turns out to be to reach a 'Singularity', an AI who betters itself without any external influences 💻.
 
-The project is at an early stage and you still can join! - May you?: https://discord.gg/dalas ✨
+The project is at an _early stage_ and you still can join! - May you?: https://discord.gg/dalas ✨
