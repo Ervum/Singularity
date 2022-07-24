@@ -1,0 +1,1035 @@
+float v = 10;
+
+int vs = 500;
+
+float[][] k = new float[vs][2];
+
+int[] kss = new int[vs];
+
+int[] time = new int[vs];
+
+int dt = 1;
+
+int o = 3;
+
+int contador;
+
+int[] a = {0};
+
+int[] lugar = new int[vs];
+
+int[] lugars = new int[vs];
+
+int n = 1;
+
+int golpes = 0;;
+
+float c = 1;
+
+float l = 0.1;
+
+int mut = 20;
+
+int kssss;
+
+boolean uwu = true;
+
+poblacion pob; 
+
+ArrayList<nn> Brains = new ArrayList<nn>(vs);
+
+ArrayList<player> p2s = new ArrayList<player>(vs);
+
+ArrayList<ball> balls = new ArrayList<ball>(vs);
+
+historial historial = new historial();
+
+int padre, madre;
+
+float ex = 0;
+
+void setup(){
+
+  stroke(0);
+
+  size(800, 900, P2D);
+
+  background(0);
+
+    for(int i = 0; i < vs; i++){
+
+    Brains.add(new nn());
+
+    p2s.add(new player(400, 20, i));
+
+    balls.add(new ball());
+
+    pob = new poblacion();
+
+  }
+
+}
+
+void draw(){
+
+background(0);
+
+pob.start();
+
+pob.mejores();
+
+if(kssss == 1){
+
+  a = historial.actualizar(max(time));
+
+}
+
+text(max(a), 400, 450);
+
+//pob.nuevaG();
+
+pob.reproducir(); 
+
+text("Generacion" + ":   " +n, 400, 900); 
+
+text("golpes" + ":  " +golpes, 400, 890); 
+
+      //text("salida1: " +k[0][0], 20, 20);
+
+      //text("salida2: "+ k[0][1], 20, 40);
+
+     // text("entrada1: " + owo.x/800, 20, 60);
+
+      //text("entrada2: " + owo.y/900, 20, 80);
+
+      //text("entrada3: " + dist(owo.x, owo.y, ewe.x + 50, ewe.y + 5)/1204, 20, 100);
+
+}
+
+void mostrar(){
+
+  if(keyPressed){
+
+    if(key == 'a'){
+
+      uwu = true;
+
+      //l = l + 0.1;
+
+      //mut = mut + 1;
+
+      //key = 'b';
+
+    }
+
+    if(key == 's'){
+
+      uwu = false;
+
+      //l = l - 0.1;
+
+      //mut = mut - 1;
+
+      
+
+    }
+
+    if(key == 'm'){
+
+    mut  = mut + 1; 
+
+    key = 'b';
+
+    }
+
+    if(key == 'n'){
+
+    mut  = mut - 1; 
+
+    key = 'b';
+
+    }
+
+    if(key == 'l'){
+
+    l  = l + 0.1; 
+
+    key = 'b';
+
+    }
+
+    if(key == 'k'){
+
+    l  = l - 0.1; 
+
+    key = 'b';
+
+    }
+
+  }
+
+}
+
+class nn{
+
+  float xs, ys, xz, yz;
+
+  float[] Y1 = {0., 0., 0., 0.};
+
+  float[] Y2 = {0., 0., 0., 0.};
+
+  float[] Y3 = {0, 0};
+
+  float [][] W1 = {{random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c)}};
+
+  float [][] W2 = {{random(-c, c), random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c), random(-c, c)}};
+
+  float [][] W3 = {{random(-c, c), random(-c, c), random(-c, c), random(-c, c)}, {random(-c, c), random(-c, c), random(-c, c), random(-c, c)}};
+
+  float [] b1 = {random(-c, c), random(-c, c), random(-c, c), random(-c, c)};
+
+  float [] b2 = {random(-c, c), random(-c, c), random(-c, c), random(-c, c)};
+
+  float b3[] = {random(-c, c), random(-c, c)};
+
+  float sigmoid(float w){
+
+    return 1/(1 + exp(-w));
+
+  }
+
+  float[] frontPropagate(ball other, player others){
+
+     xs = other.x;
+
+     ys = other.y;
+
+     xz = others.x;
+
+     yz = others.y;
+
+     float[] X = {xs/800, ys/900, dist(xs, ys, xz + 50, yz + 5)/1204};
+
+    //1
+
+    for(int i = 0; i < 4; i++){
+
+       Y1[i] = sigmoid((W1[i][0]*X[0] + W1[i][1]*X[1] + W1[i][2]*X[2] + b1[i]));
+
+    }
+
+    //2
+
+    for(int i = 0; i < 4; i++){
+
+       Y2[i] = sigmoid(W2[i][0]*Y1[0] + W2[i][1]*Y1[1] + W2[i][2]*Y1[2] + W2[i][3]*Y1[3] + b2[i]);
+
+    }
+
+    for(int i = 0; i < 2; i++){
+
+       Y3[i] = sigmoid(W2[i][0]*Y1[0] + W2[i][1]*Y1[1] + W2[i][2]*Y1[2] + W2[i][3]*Y1[3] + b3[i]);
+
+    }
+
+    return Y3;
+
+     }
+
+}
+
+class ball{
+
+  float x = 400 + random(-20, 20);
+
+  float y = 600 +random(-20, 20);
+
+  //float x = 400;
+
+  //float y = 450;
+
+  float vx = 4*pow(-1, int(random(0, 2)));
+
+  float vy = -3;
+
+  int vi = 1;
+
+  int ks = 1;
+
+  int ssuma = 0;
+
+  int dssuma = 1;
+
+  void display(int i){
+
+    //fill((i +o)*ks*255/vs, (i + o)*ks*255/vs, 120);
+
+    fill(255);
+
+         if(i == 0){
+
+      fill(0,120, 150);
+
+    }
+
+    ellipse(x , y, 20, 20);
+
+    //text(i,x-1, y-20);
+
+    //fill((i +20)*ks*255/vs, (i + 20)*ks*255/vs, i*ks*255/vs);
+
+    //fill(255);
+
+    //text(time[i],x-1, y+25);
+
+  }
+
+  void move(){
+
+   x = x + vx;
+
+   y = y + vy;
+
+   //x = mouseX;
+
+   //y = mouseY;
+
+  }
+
+  void collide(int i){
+
+    player p2 = p2s.get(i);
+
+    if(p2.x >= 0){
+
+      if(p2.x <= 800){
+
+      //time[i] = time[i] + dt*vi;
+
+      }
+
+    }
+
+    //time[i] = time[i] + dt*vi;
+
+    if(x <= 0){
+
+      vx = -vx;
+
+    }
+
+    if(x >= 800){
+
+      vx = -vx;
+
+    }
+
+    if(y >= 900){
+
+     vy = -vy;
+
+    }
+
+    if(y <= 0){
+
+      vy = -vy;
+
+      kss[i] = kss[i] + vi;
+
+      vi = 0;
+
+    }
+
+  }
+
+  void Muerte(int i){
+
+    if(kss[i] == 1){
+
+     for(int j = 0; j <Brains.size(); j++){ 
+
+      ssuma = ssuma + kss[j]*dssuma;
+
+    }
+
+     lugar[vs - ssuma] = i;
+
+     lugars[i] = vs - ssuma + 1;
+
+       x = 10000;
+
+       y = 10000;
+
+       dssuma = 0;
+
+    }
+
+   }
+
+}
+
+class historial{
+
+int[] lista = new int[0];
+
+  int[] actualizar(int uwu){
+
+    lista = append(lista, uwu);
+
+    return lista;
+
+  }
+
+}
+
+class player{
+
+  float x, y;
+
+  char a, b;
+
+  int I;
+
+  int ks = 1;
+
+  int h =1;
+
+  float bs = 6;
+
+  int colision = 0;
+
+  int kiss1 = 0;
+
+  int kiss2 = 0;
+
+  boolean mover;
+
+  player(float Tempx, float Tempy, char A, char B){
+
+    x = Tempx;
+
+    y = Tempy;
+
+    a = A;
+
+    b = B;  
+
+  }
+
+   player(float Tempx, float Tempy, int p){ 
+
+    x = Tempx;
+
+    y = Tempy; 
+
+    I = p;
+
+  }
+
+   void display(int i){
+
+     //fill((i +o)*ks*255/vs, (i + o)*ks*255/vs, 120);
+
+     fill(255);
+
+     if(i == 0){
+
+      fill(0,120, 150);
+
+    }
+
+     rect(x, y, 150, 10);
+
+   }
+
+   void move(){
+
+     if(keyPressed){
+
+      if(key == a){
+
+      x = x - v;
+
+     }
+
+     if(key == b){
+
+      x = x + v;
+
+     }
+
+     }
+
+   }
+
+   void IA(int i){
+
+     nn Brain = Brains.get(i);
+
+     ball ball = balls.get(i);
+
+     player p2 = p2s.get(i);
+
+      k[i] = Brain.frontPropagate(ball, p2);
+
+      
+
+     if(k[i][1] > 0.5){
+
+       mover = false;
+
+     }
+
+   else{
+
+   mover = true;
+
+   }
+
+      if(mover == true){
+
+      if(i == 0){
+
+       //fill(100, 100, 120);
+
+      //text(k[i][0], 300, 450);
+
+      //text(k[i][1], 400, 450);
+
+      }
+
+      if(k[i][0] < 0.5){
+
+      //bs = 6;
+
+      x = x - bs;
+
+     }
+
+     if(k[i][0] > 0.5){
+
+      //bs = 6;
+
+      x = x + bs;
+
+     }
+
+     if((x < 0)&&(kiss1 == 0)){
+
+     //time[i] = time[i] - 1*dt;
+
+     bs = -bs;
+
+     kiss1 = 1;
+
+    }
+
+    if((x > 0)&&(kiss1 == 1)){
+
+     kiss1 = 0;
+
+    }
+
+    if((x > 700)&&(kiss2 == 0)){
+
+      //time[i] = time[i] - 1*dt;
+
+      bs = -bs;
+
+      kiss2 = 1;
+
+    }
+
+    if((x < 700)&&(kiss2 == 1)){
+
+      kiss2 = 0;
+
+    }
+
+   }
+
+   }
+
+   void collide(ball other, int i){
+
+      ball ball = balls.get(i);
+
+     if( dist(x, y, ball.x, ball.y)<= 20){
+
+      //time[i] = time[i] + 1*dt;
+
+     }
+
+     if(colision == 0){
+
+    if(abs(y + 5 - other.y) <= 5){
+
+     if(abs(x + 75 - other.x) <= 75){
+
+       other.vy = -other.vy;
+
+       time[i] = time[i] + 1;
+
+        colision = 1;
+
+        golpes++;
+
+     }
+
+    }
+
+   }
+
+   if(abs(y + 5 - other.y) >= 5){
+
+     if(abs(x + 75 - other.x) >= 75){
+
+       colision = 0;
+
+     }
+
+    }
+
+   }
+
+   void Muerte(int i){
+
+       if(kss[i] == 1){
+
+       x = 10000;
+
+       y = 10000;
+
+    }
+
+   }
+
+}
+
+class poblacion{
+
+  int Tiempos;
+
+  int ksss = 0;
+
+  int dsuma = 1;
+
+  int suma = 0;
+
+  int tiempofinal;
+
+ void start(){
+
+    for(int i = 0; i < Brains.size(); i++){
+
+       ball ball = balls.get(i);
+
+       player p2 = p2s.get(i);
+
+    if(uwu == true){
+
+    p2.display(i);
+
+    ball.display(i);
+
+    }else{
+
+      ball owo = balls.get(padre);
+
+      player ewe = p2s.get(padre);
+
+      owo.display(padre);
+
+      ewe.display(padre);
+
+      text("learning rate: " + l, 0, 20);
+
+      text("mut rate: " + mut, 0, 40);
+
+    }
+
+    mostrar();
+
+    ball.move();
+
+    ball.collide(i);
+
+    p2.collide(ball, i);
+
+    p2.IA(i);
+
+    p2.Muerte(i);
+
+    ball.Muerte(i);
+
+    for(int j = 0; j <Brains.size(); j++){ 
+
+      suma = suma + kss[j]*dsuma;
+
+    }
+
+    text("Muertos: " + suma, 700, 900);
+
+    text("Vivos: " + (Brains.size() - suma), 700, 870);
+
+    if(suma ==Brains.size()){
+
+     dsuma = 0;
+
+    }
+
+    else{
+
+    suma = 0;
+
+    }
+
+    for(int k = 0; k < vs; k++){
+
+      //fill((k +o)*1*255/vs, (k + o)*1*255/vs, 120);
+
+      fill(255);
+
+    if(uwu == true){
+
+       //text(k + ":  " +time[k], 0, 20 + 20*k);
+
+       //text("Primer lugar", 50, 20 + 20*y3[0]);
+
+    }else{
+
+       //text(y3[0] + ":  " +time[y3[0]], 0, 20 + 20*y3[0]);
+
+       //text("Primer lugar", 50, 20 + 20*y3[0]);
+
+    }
+
+    }
+
+} 
+
+     text("maximo: " + max(time), 700, 885);
+
+ }
+
+ void mejores(){
+
+   if((suma == Brains.size())&&(ksss == 0)){
+
+            ksss = 1;
+
+            kssss = ksss;
+
+                                           }
+
+ }
+
+ void nuevaG(){
+
+   if(ksss == 1){
+
+     //anterior = time;
+
+}
+
+ }
+
+void reproducir(){
+
+  if(ksss == 1){
+
+  nn Brain = new nn();
+
+  nn Brain2 = new nn();
+
+    for(int i = Brains.size() - 1; i > -1;i = i - 1){
+
+    p2s.remove(i);
+
+    balls.remove(i);
+
+    }
+
+    for(int i = 0; i < Brains.size(); i++){
+
+    p2s.add(new player(400, 20, Brains.size()));
+
+    balls.add(new ball());
+
+    suma = 0;
+
+    
+
+    time[i] = 0; 
+
+    kss[i] = 0;
+
+    dsuma = 1;
+
+    }
+
+       ksss = 0;
+
+       kssss = ksss;
+
+       golpes = 0;
+
+       n = n +1;
+
+       //padre
+
+       ex = random(0, 1);
+
+       for(int i = 0; i < vs; i++){
+
+       //println(ex);
+
+        if(ex >= 1 - pow(0.5, i) ){
+
+        if( ex <=  1 - pow(0.5, i + 1)){
+
+         padre = lugar[i];
+
+        }
+
+        }
+
+       }
+
+       //println(ex);
+
+      //println(padre + "    " + lugars[padre] );
+
+     //madre
+
+     ex = random(0, 1);
+
+     for(int i = 0; i < vs; i++){
+
+        if(ex >= 1 - pow(0.5, i) ){
+
+        if( ex <=  1 - pow(0.5, i + 1)){
+
+         madre = lugar[i];
+
+        }
+
+        }
+
+       }
+
+       
+
+      //Ellite
+
+      if((a[n - 2] == max(a))){
+
+        nn uwur = Brains.get(padre);
+
+        Brains.remove(0);
+
+        Brains.add(0, uwur);
+
+      }
+
+      
+
+     for(int i = 1; (i < Brains.size()); i++){
+
+      Brain =  Brains.get(padre);
+
+      Brain2 = Brains.get(madre);
+
+      nn WTF = Brains.get(i);
+
+     //Reproduccion
+
+     for(int j = 0; j < 4; j++){
+
+       for(int q = 0; q < 3; q++){
+
+       if(int(random(0, 5)) == 1){
+
+        WTF.W1[j][q] = Brain2.W1[j][q];
+
+       }else{
+
+       WTF.W1[j][q] = Brain.W1[j][q];
+
+       }
+
+       }
+
+       for(int q = 0; q < 4; q++){
+
+       if(int(random(0, 5)) == 1){
+
+        WTF.W2[j][q] = Brain2.W2[j][q];
+
+       }else{
+
+       WTF.W2[j][q] = Brain.W2[j][q];
+
+       }
+
+       }
+
+       if(int(random(0, 5)) == 1){
+
+        WTF.b1[j] = Brain2.b1[j];
+
+       }else{
+
+         WTF.b1[j] = Brain.b1[j];
+
+       }
+
+       if(int(random(0, 5)) == 1){
+
+         WTF.b2[j] = Brain2.b2[j];
+
+       }else{
+
+       WTF.b2[j] = Brain.b2[j];
+
+       }
+
+      for(int js = 0; js < 2; js++){
+
+       for(int q = 0; q < 2; q++){
+
+         if(int(random(0, 5)) == 1){
+
+         WTF.W3[js][q] = Brain.W3[js][q];
+
+         }else{
+
+         WTF.W3[js][q] = Brain2.W3[js][q];
+
+         }
+
+         if(int(random(0, 5)) == 1){        
+
+         WTF.b3[q] = Brain.b3[q];
+
+         }else{
+
+         WTF.b3[q] = Brain2.b3[q];
+
+         }
+
+     }
+
+      }
+
+     Brains.remove(i);
+
+     Brains.add(i, WTF);
+
+  }
+
+    }
+
+  for(int is = Brains.size() - 1; (is > 0);is = is - 1){
+
+      nn OMG = Brains.get(is);
+
+         for(int j = 0; j < 4; j++){
+
+      for(int q = 0; q < 3; q++){
+
+       if(int(random(0, (mut*2 + 1))) == 1){
+
+       OMG.W1[j][q] = OMG.W1[j][q] - random(-l,l);
+
+       }else{
+
+       OMG.W1[j][q] = OMG.W1[j][q] + random(-l, l)*0;
+
+       }
+
+      }
+
+     for(int q = 0; q < 4; q++){
+
+       if(int(random(0, (mut*2 + 1))) == 1){
+
+        OMG.W2[j][q] = OMG.W2[j][q] - random(-l, l);
+
+       }else{
+
+       OMG.W2[j][q] = OMG.W2[j][q] + random(-l, l)*0;
+
+       }
+
+     }
+
+       if(int(random(0, (mut*2 + 1))) == 1){
+
+        OMG.b1[j] = OMG.b1[j] - random(-l, l);
+
+       }else{
+
+       OMG.b1[j] = OMG.b1[j] + random(-l, l)*0;
+
+       }
+
+       if(int(random(0, (mut*2 + 1))) == 1){
+
+        OMG.b2[j] = OMG.b2[j] - random(-l, l);
+
+       }else{
+
+       OMG.b2[j] = OMG.b2[j] + random(-l, l)*0;
+
+       }
+
+     }
+
+     for(int j = 0; j < 2; j++){
+
+       for(int q = 0; q < 2; q++){
+
+         if(int(random(0, (mut*2 + 1))) == 1){
+
+       OMG.W3[j][q] = OMG.W3[j][q] - random(-l, l);
+
+         }
+
+         else{
+
+           OMG.W3[j][q] = OMG.W3[j][q] + random(-l, l)*0;
+
+         }
+
+       }
+
+     }
+
+       for(int q = 0; q < 2; q++){
+
+         if(int(random(0, (mut*2 + 1))) == 1){
+
+         OMG.b3[q] = OMG.b3[q] - random(-l, l);
+
+         }else{
+
+         OMG.b3[q] = OMG.b3[q] + random(-l, l);
+
+         }
+
+       }
+
+       //
+
+     Brains.remove(is);
+
+     Brains.add(is, OMG);
+
+  }
+
+}
+
+}
+
+}
